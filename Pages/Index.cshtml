@@ -1,0 +1,40 @@
+﻿@page
+@model IndexModel
+@using System.Text.Json
+@using System.Text.Json.Serialization
+@inject IHttpClientFactory httpClientFactory
+@inject IConfiguration config
+@inject ILogger<Index> logger
+@{
+    ViewData["Title"] = "Weather";
+    var httpClient = httpClientFactory.CreateClient();
+    logger.LogInformation($"*** Calling: {config["WeatherUrl"]}");
+    var forecast = await httpClient.GetFromJsonAsync<IEnumerable<WeatherForecast>>(config["WeatherUrl"]);
+}
+
+<div class="text-center">
+    <h1 class="display-4">Weather forecast</h1>
+    <div class="container">
+        <div class="row">
+            @foreach (var weather in forecast)
+            {
+                <div class="col">
+                    <div>
+                        <span style="font-size: 72px">@weather.Emoji</span>
+                    </div>
+                    <div>
+                        <span style="font-size: 48px">@weather.TemperatureC&#8451;</span>
+                    </div>
+                    <div>
+                        <span>@weather.Date.ToString("dd MMM")</span>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@{
+
+
+}
